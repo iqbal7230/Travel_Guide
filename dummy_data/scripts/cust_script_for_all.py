@@ -1,6 +1,6 @@
 import pymysql
 import sqlite3
-import psycopg2
+# import psycopg2
 import csv
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
@@ -17,19 +17,20 @@ settings.configure(
 )
 
 # Configuration for databases
-db_type = "sqlite"  # Change this to "sqlite", "postgresql", or "mysql"
+db_type = "mysql"  # Change this to "sqlite", "postgresql", or "mysql"
 
 # MySQL configuration
 mysql_config = {
     'host': '127.0.0.1',
     'user': 'root',
-    'password': 'gd456nds',
-    'database': 'user',
+    'password': 'Iqbal@1234',
+    'database': 'travel',
     'charset': 'utf8mb4'
 }
 
 # SQLite configuration
 sqlite_db_path = "db.sqlite3"
+
 
 # PostgreSQL configuration
 postgres_config = {
@@ -40,7 +41,7 @@ postgres_config = {
     'port': 5432
 }
 
-csv_file_path = r'dummy_data/csv/customer.csv'
+csv_file_path = r'Travel-Guide-AI/dummy_data/csv/customer.csv'
 table_name = 'auth_user'
 
 
@@ -103,7 +104,7 @@ def insert_data():
         connection.commit()
         print("Data inserted successfully!")
 
-    except (pymysql.MySQLError, sqlite3.Error, psycopg2.Error) as e:
+    except (pymysql.MySQLError, sqlite3.Error) as e:
         print(f"Error: {e}")
     finally:
         if connection:

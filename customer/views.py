@@ -13,6 +13,8 @@ import json
 from django.contrib.auth import logout
 from travelling.send_mail import send_confirmation_email
 from django.contrib.auth.models import User
+from django.utils.timezone import now
+
 
 def user_login(request):
     try:
@@ -35,6 +37,11 @@ def user_login(request):
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     login(request, user)
+
+                    profile = Profile.objects.get(user=user)
+                    profile.last_login_time = now()
+                    profile.save()
+
                     return redirect('profile')  
                 else:
                     messages.error(request, "user doesn't exists.")
@@ -52,7 +59,7 @@ def register(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            Profile.objects.create(user=user)
+            Profile.objects.create(user=user, last_updated=now())
             username = form.cleaned_data.get('username')
             request.session['registered_user'] = username
             email = form.cleaned_data.get('email')
@@ -66,6 +73,8 @@ def register(request):
                 additional_info=additional_info,
             )
             messages.success(request, "Your account has been created. You can now log in.")
+            # user = form.save()
+           
             return redirect('create_profile')  
         else:
             messages.error(request, form.errors)
@@ -84,6 +93,8 @@ def create_profile(request):
             form = EditProfileForm(request.POST, instance=user)
             if form.is_valid():
                 form.save()
+                profile.last_updated = now()
+                profile.save()
                 messages.success(request, 'you have successfully registered and created profile please login')
                 return redirect('login')
         else:
@@ -124,6 +135,7 @@ def edit_profile(request):
                         user_profile.budget_range = form.cleaned_data.get(
                             'budget_range')
                         user_profile.interests = form.cleaned_data.get('interests')
+                        user_profile.last_updated = now()
                         user_profile.save()
                     else:
                         Profile.objects.create(

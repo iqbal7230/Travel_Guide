@@ -1,0 +1,85 @@
+import pygame
+import sys
+
+# Initialize pygame
+pygame.init(chess)
+
+# Screen dimensions
+WIDTH, HEIGHT = 800, 800
+SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Chess Game")
+
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+LIGHT_BROWN = (240, 217, 181)
+DARK_BROWN = (181, 136, 99)
+
+# Load chess piece images
+PIECE_IMAGES = {}
+PIECE_NAMES = ['P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k']
+for piece in PIECE_NAMES:
+    PIECE_IMAGES[piece] = pygame.image.load(f"assets/{piece}.png")
+    PIECE_IMAGES[piece] = pygame.transform.scale(PIECE_IMAGES[piece], (100, 100))
+
+# Initial board setup
+board = [
+    ["r", "n", "b", "q", "k", "b", "n", "r"],
+    ["p", "p", "p", "p", "p", "p", "p", "p"],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["P", "P", "P", "P", "P", "P", "P", "P"],
+    ["R", "N", "B", "Q", "K", "B", "N", "R"]
+]
+
+# Draw chessboard
+def draw_board():
+    for row in range(8):
+        for col in range(8):
+            color = LIGHT_BROWN if (row + col) % 2 == 0 else DARK_BROWN
+            pygame.draw.rect(SCREEN, color, (col * 100, row * 100, 100, 100))
+
+# Draw pieces
+def draw_pieces():
+    for row in range(8):
+        for col in range(8):
+            piece = board[row][col]
+            if piece != "":
+                SCREEN.blit(PIECE_IMAGES[piece], (col * 100, row * 100))
+
+# Main game loop
+def main():
+    selected_piece = None
+    running = True
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = pygame.mouse.get_pos()
+                col, row = x // 100, y // 100
+
+                if selected_piece:
+                    # Move piece logic
+                    target_piece = board[row][col]
+                    if target_piece == "" or target_piece.islower() != selected_piece[0].islower():
+                        board[selected_piece[1]][selected_piece[2]] = ""
+                        board[row][col] = selected_piece[0]
+                        selected_piece = None
+                else:
+                    if board[row][col] != "":
+                        selected_piece = (board[row][col], row, col)
+
+        draw_board()
+        draw_pieces()
+        pygame.display.flip()
+
+    pygame.quit()
+    sys.exit()
+
+if __name__ == "__main__":
+    main(chess)

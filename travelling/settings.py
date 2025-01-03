@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'accommodation',
     'rest_framework',
     'rest_framework.authtoken',
-    'channels',
+    # 'channels',
     'chat'
 ]
 # Add this REST Framework configuration
@@ -117,9 +117,9 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'user',
+        'NAME': 'travel',
         'USER': 'root',
-        'PASSWORD': 'gd456nds',
+        'PASSWORD': 'Iqbal@1234',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
